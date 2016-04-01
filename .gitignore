@@ -4,3 +4,4 @@
 
 atomic-swap
 atomic-cmp-swap
+atomic-load
