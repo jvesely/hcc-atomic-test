@@ -1,9 +1,9 @@
-PROJECT=atomic-test
-SRCS= \
-	main.cpp
+PROJECT1=atomic-swap
+SRCS1= \
+	swap.cpp
 
-OBJS=$(SRCS:.cpp=.o)
-DEPS=$(SRCS:.cpp=.d)
+OBJS1=$(SRCS1:.cpp=.o)
+DEPS1=$(SRCS1:.cpp=.d)
 
 KMT_CPPFLAGS=-I /opt/hsakmt/include
 KMT_LDFLAGS=-L/opt/hsakmt/lib/ -lhsakmt
@@ -20,7 +20,7 @@ CPP_FLAGS=$(KMT_CPPFLAGS) $(HCC_CPPFLAGS)
 CXX_FLAGS=$(HCC_CXXFLAGS)
 LD_FLAGS=$(KMT_LDFLAGS) $(HCC_LDFLAGS)
 
-$(PROJECT): $(OBJS)
+$(PROJECT1): $(OBJS1)
 	$(CXX) $^ -o $@ $(LD_FLAGS)
 
 %.o: %.cpp
@@ -29,7 +29,7 @@ $(PROJECT): $(OBJS)
 %.d: %.cpp
 	$(CXX) -MMD -MF $@ $(CPP_FLAGS) $< -E > /dev/null
 
--include $(DEPS)
+-include $(DEPS1)
 
 clean:
-	rm -vf $(OBJS) $(PROJECT) $(DEPS)
+	rm -vf $(OBJS1) $(PROJECT1) $(DEPS1)
