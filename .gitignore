@@ -1,4 +1,6 @@
 *.o
 *.d
-atomic-test
 *.swp
+
+atomic-swap
+atomic-cmp-swap
