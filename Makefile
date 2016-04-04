@@ -2,6 +2,7 @@
 MAIN_SRCS= \
 	cmp-swap.cpp \
 	load.cpp \
+	store.cpp \
 	swap.cpp \
 
 AUX_SRCS= \
