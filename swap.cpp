@@ -30,11 +30,17 @@ int main(void)
 	});
 
 	unsigned count = 0;
+	auto start = ::std::chrono::high_resolution_clock::now();
 	parallel_for_each(concurrency::extent<1>(1),
 	                  [&](concurrency::index<1> i) restrict(amp)
 	{
 		while (test.exchange(1) == 1) {++count;};
 	});
+	auto end = ::std::chrono::high_resolution_clock::now();
+	auto us = ::std::chrono::duration_cast<::std::chrono::microseconds>(end - start);
+
+	::std::cout << "Completed " << count << " iterations in "
+	            << us.count() << " microseconds." << ::std::endl;
 
 	::std::cout << "Completed in " << count << " iterations" << ::std::endl;
 	::std::cout << "Prejoin: Value of tests: " << test << ::std::endl;
