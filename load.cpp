@@ -34,7 +34,9 @@ int main(void)
 	parallel_for_each(concurrency::extent<1>(1),
 	                  [&](concurrency::index<1> i) restrict(amp)
 	{
-		while (test == 1) {++count;};
+		int local_count = 0;
+		while (test == 1) {++local_count;};
+		count = local_count;
 	});
 	auto end = ::std::chrono::high_resolution_clock::now();
 	auto us = ::std::chrono::duration_cast<::std::chrono::microseconds>(end - start);

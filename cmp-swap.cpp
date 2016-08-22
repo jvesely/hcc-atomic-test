@@ -35,11 +35,13 @@ int main(void)
 	parallel_for_each(concurrency::extent<1>(1),
 	                  [&](concurrency::index<1> i) restrict(amp)
 	{
+		int local_count = 0;
 		while (!test.compare_exchange_strong(expected, 1))
 		{
-			++count;
+			++local_count;
 			expected = 0;
 		};
+		count = local_count;
 	});
 	auto end = ::std::chrono::high_resolution_clock::now();
 	auto us = ::std::chrono::duration_cast<::std::chrono::microseconds>(end - start);
