@@ -2,7 +2,4 @@
 *.d
 *.swp
 
-atomic-swap
-atomic-cmp-swap
-atomic-load
-atomic-store
+atomic-*
