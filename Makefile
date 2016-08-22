@@ -1,6 +1,7 @@
 
 MAIN_SRCS= \
 	cmp-swap.cpp \
+	interference.cpp \
 	load.cpp \
 	store.cpp \
 	swap.cpp \
