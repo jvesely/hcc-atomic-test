@@ -89,6 +89,8 @@ int main(int argc, const char *argv[])
 	size_t iterations = ::std::accumulate(count.begin(), count.end(), 0);
 	::std::cout << "Completed " << iterations << " iterations in "
 	            << us.count() << " microseconds." << ::std::endl;
+	::std::cout << "Completed " << ((double)iterations * 1000000) / (double)us.count() / (double)parallel
+	            << " iterations per second per thread" << ::std::endl ;
 	unlock.join();
 	return 0;
 }
