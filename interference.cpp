@@ -6,6 +6,13 @@
 #include <iostream>
 #include <thread>
 
+struct slot {
+	::std::atomic_uint test;
+	uint32_t padding[15];
+};
+
+static_assert(sizeof(slot) == 64, "");
+
 int main(int argc, const char *argv[])
 {
 	size_t parallel = 1;
@@ -32,8 +39,9 @@ int main(int argc, const char *argv[])
 	::std::cout << "GPU uint atomic is " << (GPUlf ? "" : "NOT ") << "lock free\n";
 
 	running = 0;
-	test = 1;
-	::std::cout << "Beginning: Value of tests: " << test << ::std::endl;
+	::std::vector<slot> tests(parallel);
+	for (auto &t : tests)
+		t.test = 1;
 	
 	//Run unlock thread
 	::std::thread unlock ([&]()
@@ -45,9 +53,9 @@ int main(int argc, const char *argv[])
 		size_t copy_size = from.size() * sizeof(decltype(from)::value_type);
 		::std::memcpy(from.data(), to.data(), copy_size);
 
-		::std::cout << "Thread: Value of tests: " << test << ::std::endl;
-		test = 0;
 		auto end = ::std::chrono::high_resolution_clock::now();
+		for (auto &t : tests)
+			t.test = 0;
 		auto us = ::std::chrono::duration_cast<::std::chrono::microseconds>(end - start);
 		::std::chrono::duration<double, ::std::ratio<1,1>> s = us;
 		::std::cout << "Completed CPU memcpy in "
@@ -70,7 +78,7 @@ int main(int argc, const char *argv[])
 		{
 			running = 1;
 			int local_count = 0;
-			while (test == 1) {++local_count; };
+			while (tests[i[0]].test == 1) { ++local_count; };
 			count[i[0]] = local_count;
 					
 		});
@@ -81,8 +89,6 @@ int main(int argc, const char *argv[])
 	size_t iterations = ::std::accumulate(count.begin(), count.end(), 0);
 	::std::cout << "Completed " << iterations << " iterations in "
 	            << us.count() << " microseconds." << ::std::endl;
-	::std::cout << "Prejoin: Value of tests: " << test << ::std::endl;
 	unlock.join();
-	::std::cout << "Postjoin: Value of tests: " << test << ::std::endl;
 	return 0;
 }
