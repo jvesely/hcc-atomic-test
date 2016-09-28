@@ -14,9 +14,6 @@ SRCS=$(MAIN_SRCS) $(AUX_SRCS)
 OBJS=$(SRCS:.cpp=.o)
 DEPS=$(SRCS:.cpp=.d)
 
-KMT_CPPFLAGS=-I /opt/hsakmt/include
-KMT_LDFLAGS=-L/opt/hsakmt/lib/ -lhsakmt
-
 HCC_CONFIG=/opt/hcc-amdgpu/bin/hcc-config
 CXX=/opt/hcc-amdgpu/bin/clang++
 
@@ -25,9 +22,9 @@ HCC_CPPFLAGS=$(shell $(HCC_CONFIG) --cxxflags --install)
 HCC_CXXFLAGS=$(shell $(HCC_CONFIG) --cxxflags --install)
 HCC_LDFLAGS=$(shell $(HCC_CONFIG) --ldflags --install)
 
-CPP_FLAGS=$(KMT_CPPFLAGS) $(HCC_CPPFLAGS)
+CPP_FLAGS=$(HCC_CPPFLAGS)
 CXX_FLAGS=$(HCC_CXXFLAGS)
-LD_FLAGS=$(KMT_LDFLAGS) $(HCC_LDFLAGS)
+LD_FLAGS=$(HCC_LDFLAGS)
 
 all: $(BINS)
 
