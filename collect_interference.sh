@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ "x$SUFFIX" == "x" ] ; then
+	SUFFIX=`uname -n`
+fi
+
 DIR=data-${SUFFIX}
 
 mkdir -p $DIR
