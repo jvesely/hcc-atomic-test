@@ -1,4 +1,4 @@
-#include <amp.h>
+#include <hc.hpp>
 
 #include <atomic>
 #include <chrono>
@@ -31,11 +31,11 @@ int main(int argc, const char *argv[])
 	::std::vector<int> to(size, 0x10);
 
 	bool GPUlf = false;
-	parallel_for_each(concurrency::extent<1>(1),
-	                  [&](concurrency::index<1> i) restrict(amp)
+	parallel_for_each(hc::extent<1>(1),
+	                  [&](hc::index<1> i) restrict(amp)
 	{
 		GPUlf = test.is_lock_free();
-	});
+	}).wait();
 	::std::cout << "GPU uint atomic is " << (GPUlf ? "" : "NOT ") << "lock free\n";
 
 	running = 0;
@@ -73,15 +73,15 @@ int main(int argc, const char *argv[])
 	if (parallel == 0) {
 		running = 1;
 	} else {
-		parallel_for_each(concurrency::extent<1>(parallel),
-		                  [&](concurrency::index<1> i) restrict(amp)
+		parallel_for_each(hc::extent<1>(parallel),
+		                  [&](hc::index<1> i) restrict(amp)
 		{
 			running = 1;
 			int local_count = 0;
 			while (tests[i[0]].test == 1) { ++local_count; };
 			count[i[0]] = local_count;
 					
-		});
+		}).wait();
 	}
 	auto end = ::std::chrono::high_resolution_clock::now();
 	auto us = ::std::chrono::duration_cast<::std::chrono::microseconds>(end - start);
