@@ -8,7 +8,7 @@ if [ "x$ITERATIONS" == "x" ] ; then
 	ITERATIONS=20
 fi
 
-for i in 16 40 80 160 `seq 320 320 20480` ; do
+for i in 0 16 40 80 160 `seq 320 320 20480` ; do
 	FILE=${DIR}/${i}.data
 	echo -n > $FILE
 	for j in `seq $ITERATIONS` ; do
