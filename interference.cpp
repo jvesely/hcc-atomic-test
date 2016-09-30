@@ -62,7 +62,7 @@ int main(int argc, const char *argv[])
 		            << us.count() << " microseconds." << ::std::endl;
 		const double gbs = (copy_size / 1024 / 1024/ 1024);
 		::std::cout << "Copied " << gbs << " GBs in " << s.count()
-		            << "seconds\n";
+		            << " seconds\n";
 		::std::cout << "Copy BW: "
 		         << (double)(copy_size / 1024 / 1024 / 1024) / s.count()
 		            << " GB/s" << ::std::endl;
