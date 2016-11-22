@@ -24,14 +24,17 @@ for i in 0 16 40 80 160 `seq 320 320 20480` ; do
 	rm -f $FILE
 	until [ -f $FILE ] ; do
 		for j in `seq $ITERATIONS` ; do
-			until run $i $FILE; do
+			if ! run $i $FILE; then
 				GPU_UTIL=`radeontop -d - -l 1 | grep -o 'gpu[^,]*'`
 				if [ "$GPU_UTIL" != "gpu 0.00%" ]; then
 					echo "ERROR: program crashed and the GPU is in not recoverable state. Exiting"
-					rm -v $FILE;
-					exit 1;
+					rm -v $FILE
+					exit 1
+				else
+					rm -vf $FILE
+					break
 				fi
-			done
+			fi
 		done
 	done
 done
