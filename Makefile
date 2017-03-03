@@ -5,6 +5,7 @@ MAIN_SRCS= \
 	load.cpp \
 	store.cpp \
 	swap.cpp \
+	global.cpp
 
 AUX_SRCS= \
 
