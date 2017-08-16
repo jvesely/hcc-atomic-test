@@ -8,6 +8,7 @@
 int main(void)
 {
 	::std::atomic_uint test;
+#if __hcc_major__ < 1
 	::std::cout << "CPU uint atomic is " << (test.is_lock_free() ? "" : "NOT ")
 	            << "lock free\n";
 
@@ -18,6 +19,7 @@ int main(void)
 		GPUlf = test.is_lock_free();
 	});
 	::std::cout << "GPU uint atomic is " << (GPUlf ? "" : "NOT ") << "lock free\n";
+#endif
 
 	test = 1;
 	::std::cout << "Beginning: Value of tests: " << test << ::std::endl;
