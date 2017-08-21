@@ -24,11 +24,9 @@ int main(int argc, const char *argv[])
 	size_t size = 1024*1024*1024; // 4GB by default
 
 	::std::atomic_uint test, running;
+#if __hcc_major__ < 1
 	::std::cout << "CPU uint atomic is " << (test.is_lock_free() ? "" : "NOT ")
 	            << "lock free\n";
-
-	::std::vector<int> from(size, 0xf);
-	::std::vector<int> to(size, 0x10);
 
 	bool GPUlf = false;
 	parallel_for_each(hc::extent<1>(1),
@@ -37,6 +35,10 @@ int main(int argc, const char *argv[])
 		GPUlf = test.is_lock_free();
 	}).wait();
 	::std::cout << "GPU uint atomic is " << (GPUlf ? "" : "NOT ") << "lock free\n";
+#endif
+
+	::std::vector<int> from(size, 0xf);
+	::std::vector<int> to(size, 0x10);
 
 	running = 0;
 	::std::vector<slot> tests(parallel);
@@ -73,13 +75,21 @@ int main(int argc, const char *argv[])
 	if (parallel == 0) {
 		running = 1;
 	} else {
+#if __hcc_major__ < 1
+		auto &ltests = tests;
+		auto &lcount = count;
+#else
+		slot *ltests = tests.data();
+		unsigned *lcount = count.data();
+#endif
+
 		parallel_for_each(hc::extent<1>(parallel),
 		                  [&](hc::index<1> i) restrict(amp)
 		{
 			running = 1;
 			int local_count = 0;
-			while (tests[i[0]].test == 1) { ++local_count; };
-			count[i[0]] = local_count;
+			while (ltests[i[0]].test == 1) { ++local_count; };
+			lcount[i[0]] = local_count;
 					
 		}).wait();
 	}
